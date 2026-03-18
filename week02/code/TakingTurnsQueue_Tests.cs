@@ -144,6 +144,9 @@ public class TakingTurnsQueueTests
     // Scenario: Try to get the next person from an empty queue
     // Expected Result: Exception should be thrown with appropriate error message.
     // Defect(s) Found: 
+
+    // This was the only test that works. It is good. There are no defects. It was the only test out
+    // of the 7 tests that passed with out making changes. The function correctly throws the InvalidOperationException and gives the message.
     public void TestTakingTurnsQueue_Empty()
     {
         var players = new TakingTurnsQueue();
