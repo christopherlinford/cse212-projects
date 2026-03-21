@@ -12,6 +12,9 @@ public class TakingTurnsQueueTests
     // run until the queue is empty
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
     // Defect(s) Found: 
+
+    // The ordering is all messed up. The reason is that instead of puting the players in at the back, it inserts them at the first. It does not have
+    // the right FIFO ordering. The queue ordering is messed up in the running of the queue.
     public void TestTakingTurnsQueue_FiniteRepetition()
     {
         var bob = new Person("Bob", 2);
@@ -44,6 +47,8 @@ public class TakingTurnsQueueTests
     // After running 5 times, add George with 3 turns.  Run until the queue is empty.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, George, Sue, Tim, George, Tim, George
     // Defect(s) Found: 
+
+    //The queue does not have the right order. It does its inserts at the front of the list. This means the ordering gets all messed up.
     public void TestTakingTurnsQueue_AddPlayerMidway()
     {
         var bob = new Person("Bob", 2);
@@ -86,6 +91,9 @@ public class TakingTurnsQueueTests
     // Run 10 times.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
     // Defect(s) Found: 
+
+    // People that have zero should have infinite turns and stay remained in the queue. The program does not re-enqueue people with
+    // players with 0. This means they are removed wrongly from the queue.                                                                                 
     public void TestTakingTurnsQueue_ForeverZero()
     {
         var timTurns = 0;
@@ -117,6 +125,9 @@ public class TakingTurnsQueueTests
     // Run 10 times.
     // Expected Result: Tim, Sue, Tim, Sue, Tim, Sue, Tim, Tim, Tim, Tim
     // Defect(s) Found: 
+
+    // The players with negative turns should be treated with infinite turns. The code does not re-enqueue players with
+    // negative values. They get kicked out or removed from the queue incorectly. The negative turns should behave like they are infinite. 
     public void TestTakingTurnsQueue_ForeverNegative()
     {
         var timTurns = -3;
