@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.VisualBasic;
 
 public static class SetsAndMaps
 {
@@ -22,7 +23,31 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+
+        // step 1 put words in a hashset for 0(1) look up
+        var set = new HashSet<string>(words);
+        // store our final pairs
+        var result = new List<string>();
+        //step 2 looping through each word
+        foreach (var word in words)
+        {
+            //step 3 skip words like "aa" 
+            if (word[0] == word[1])
+                continue;
+            // step 4 reverse of word ex: "am to "ma"
+            string reversed = $"{word[1]}{word[0]}";
+            // step 5 check if reverse word in set
+            if (set.Contains(reversed))
+            {
+                //step 6 add pair to results
+                result.Add($"{word} & {reversed}");
+                //step 7 remove both words avoid duplicates
+                set.Remove(word);
+                set.Remove(reversed);
+            }
+        }
+        // Step 8 convert list to array and return
+        return result.ToArray();
     }
 
     /// <summary>
@@ -43,6 +68,16 @@ public static class SetsAndMaps
         {
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
+            string degree = fields[3].Trim();
+            // if degree exists increment
+            if (degrees.ContainsKey(degree))
+            {
+                degrees[degree]++;
+            }
+            else
+            {
+                degrees[degree] = 1;
+            }
         }
 
         return degrees;
@@ -67,7 +102,39 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+
+        // normalize remove spaces and make lower case
+        word1 = word1.Replace(" ", "").ToLower();
+        word2 = word2.Replace(" ", "").ToLower();
+
+        // if lengths differ can't be anagram
+        if (word1.Length != word2.Length)
+            return false;
+        var counts = new Dictionary<char, int>();
+        //Count letters in word1
+        foreach (char c in word1)
+        {
+            if (counts.ContainsKey(c))
+                counts[c]++;
+            else
+                counts[c] = 1;
+
+        }
+        // subtract counts using word2
+        foreach (char c in word2)
+        {
+            // if letter doesn't exist not an anagram
+            if (!counts.ContainsKey(c))
+                return false;
+            counts[c]--;
+
+            //if count goes negative it is a mismatch
+            if (counts[c] < 0)
+                return false;
+        }
+        // if all counts blanced it is an anagram
+        return true;
+
     }
 
     /// <summary>
@@ -101,6 +168,21 @@ public static class SetsAndMaps
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
         // 3. Return an array of these string descriptions.
-        return [];
+
+        var result = new List<string>();
+        if (featureCollection?.Features != null)
+        {
+            foreach (var feature in featureCollection.Features)
+            {
+                if (feature?.Properties != null)
+                {
+                    string place = feature.Properties.Place;
+                    double? mag = feature.Properties.Mag;
+
+                    result.Add($"{place} - Mag {mag}");
+                }
+            }
+        }
+        return result.ToArray();
     }
 }
