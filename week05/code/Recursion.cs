@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 public static class Recursion
 {
@@ -15,7 +16,20 @@ public static class Recursion
     public static int SumSquaresRecursive(int n)
     {
         // TODO Start Problem 1
-        return 0;
+
+        // base case, if n or negative it will stop recursion
+        if (n <= 0)
+            return 0;
+
+        // recursive part, take current number squared
+        int currentSquare = n * n;
+
+
+        // solve smaller problem (n-1)
+        int smallerProblem = SumSquaresRecursive(n - 1);
+
+        // combined result
+        return currentSquare + smallerProblem;
     }
 
     /// <summary>
@@ -40,6 +54,23 @@ public static class Recursion
     public static void PermutationsChoose(List<string> results, string letters, int size, string word = "")
     {
         // TODO Start Problem 2
+        // Base case,
+        if (word.Length == size)
+        {
+            results.Add(word);
+            return;
+        }
+        // recursive case
+        for (int i = 0; i < letters.Length; i++)
+        {
+            // chose a letter
+            char chosen = letters[i];
+            // remove letter froma aviable letters
+            string remaining =
+                letters.Substring(0, i) + letters.Substring(i + 1);
+            // recurse update word reduced letters
+            PermutationsChoose(results, remaining, size, word + chosen);
+        }
     }
 
     /// <summary>
@@ -98,8 +129,14 @@ public static class Recursion
 
         // TODO Start Problem 3
 
+        if (remember == null)
+            remember = new Dictionary<int, decimal>();
+        if (remember.ContainsKey(s))
+            return remember[s];
+
         // Solve using recursion
-        decimal ways = CountWaysToClimb(s - 1) + CountWaysToClimb(s - 2) + CountWaysToClimb(s - 3);
+        decimal ways = CountWaysToClimb(s - 1, remember) + CountWaysToClimb(s - 2, remember) + CountWaysToClimb(s - 3, remember);
+        remember[s] = ways;
         return ways;
     }
 
@@ -119,6 +156,28 @@ public static class Recursion
     public static void WildcardBinary(string pattern, List<string> results)
     {
         // TODO Start Problem 4
+        // first wildcard to find
+        int index = pattern.IndexOf('*');
+
+        //base case
+        if (index == -1)
+        {
+            results.Add(pattern);
+            return;
+        }
+
+        //recursive
+        // replace * with 0
+        string withZero =
+            pattern.Substring(0, index) + "0" + pattern.Substring(index + 1);
+
+        // replace * with 1
+        string withOne =
+            pattern.Substring(0, index) + "1" + pattern.Substring(index + 1);
+
+        // Recursive possibilities
+        WildcardBinary(withZero, results);
+        WildcardBinary(withOne, results);
     }
 
     /// <summary>
@@ -129,14 +188,36 @@ public static class Recursion
     {
         // If this is the first time running the function, then we need
         // to initialize the currPath list.
-        if (currPath == null) {
+        if (currPath == null)
+        {
             currPath = new List<ValueTuple<int, int>>();
         }
-        
+
         // currPath.Add((1,2)); // Use this syntax to add to the current path
 
         // TODO Start Problem 5
         // ADD CODE HERE
+
+        if (!maze.IsValidMove(currPath, x, y))
+            return;
+
+        currPath.Add((x, y));
+        if (maze.IsEnd(x, y))
+        {
+            results.Add(currPath.AsString());
+            currPath.RemoveAt(currPath.Count - 1);
+            return;
+        }
+        // move right
+        SolveMaze(results, maze, x + 1, y, currPath);
+        // move left
+        SolveMaze(results, maze, x - 1, y, currPath);
+        // move down
+        SolveMaze(results, maze, x, y + 1, currPath);
+        //  move up
+        SolveMaze(results, maze, x, y - 1, currPath);
+
+        currPath.RemoveAt(currPath.Count - 1);
 
         // results.Add(currPath.AsString()); // Use this to add your path to the results array keeping track of complete maze solutions when you find the solution.
     }
