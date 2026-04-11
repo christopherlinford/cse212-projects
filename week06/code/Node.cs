@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 public class Node
 {
     public int Data { get; set; }
@@ -53,6 +55,19 @@ public class Node
     public int GetHeight()
     {
         // TODO Start Problem 4
-        return 0; // Replace this line with the correct return statement(s)
+        // get height left sub tree
+        int leftHeight;
+        if (Left == null)
+            leftHeight = 0;
+        else
+            leftHeight = Left.GetHeight(); // recusive call
+        //find height right sub tree
+        int rightHeight;
+        if (Right == null)
+            rightHeight = 0;
+        else
+            rightHeight = Right.GetHeight(); // recursive call
+        // return height current node
+        return 1 + Math.Max(leftHeight, rightHeight); // Replace this line with the correct return statement(s)
     }
 }
